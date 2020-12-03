@@ -1,34 +1,74 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8" />
     <title>Desafio Front-end - Miguel</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-    <link href="https://kendo.cdn.telerik.com/2020.3.1118/styles/kendo.common.min.css" rel="stylesheet" />
-    <link href="https://kendo.cdn.telerik.com/2020.3.1118/styles/kendo.default.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://kendo.cdn.telerik.com/2020.3.1118/styles/kendo.common.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://kendo.cdn.telerik.com/2020.3.1118/styles/kendo.default.min.css"
+      rel="stylesheet"
+    />
     <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2020.3.1118/js/kendo.all.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <header>
-        <img src="/img/logo_horizontal.png" alt="UPPERCASE Consultoria logo">
+      <img src="/img/logo_horizontal.png" alt="UPPERCASE Consultoria logo" />
     </header>
 
     <section class="content">
-        <section class="container">
-            <section class="top">
-                <h1>Adicionar novo usuario</h1>
-                <input type="text" name="filter" id="filter">
-            </section>
-            <div id="kendo">
-                
-            </div>
+      <section class="container">
+        <section class="top">
+          <h1>Adicionar novo usuario</h1>
+          <input type="text" name="filter" id="filter" />
         </section>
+        <div id="kendo"></div>
+      </section>
     </section>
     <script>
-    </script>
+      var dataSource = new kendo.data.DataSource({
+        transport: {
+          read: {
+            // The remote service url.
+            url: "https://avaliacao1.azurewebsites.net/api/v1/client/clients",
 
-</body>
+            // The request type.
+            type: "get",
+
+            // The data type of the returned result.
+            dataType: "json",
+          },
+        },
+        // Describe the result format.
+        schema: {
+          // The data to which the DataSource will be bound is in the "list" field of the response.
+          data: "list",
+        },
+      });
+      $(document).ready(function () {
+        $("#kendo").kendoGrid({
+          dataSource: dataSource,
+          height: 550,
+          columns: [
+            {
+              field: "ClienteID",
+            },
+            {
+              field: "NameClient",
+              title: "Nome",
+            },
+          ],
+        });
+      });
+    </script>
+  </body>
 </html>
