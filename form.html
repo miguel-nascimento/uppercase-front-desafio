@@ -49,9 +49,11 @@
             {
               field: "NumericTextBox",
               editor: "NumericTextBox",
-              min: 1,
-              format: "#.#",
-              decimals: 1,
+              editorOptions: {
+                min: 1,
+                format: "#.#",
+                decimals: 1,
+              },
               label: "ID:",
               validation: { required: true },
             },
@@ -64,20 +66,24 @@
         });
       });
 
-      // $("#numerictextbox").kendoNumericTextBox({
-      //   min: 1,
-      //   orientation: "vertical",
-      //   format: "#.#",
-      //   decimals: 1,
-      //   items: [
-      //     {
-      //       field: "NumericTextBox",
-      //       editor: "NumericTextBox",
-      //       label: "ID:",
-      //       validation: { required: true },
-      //     },
-      //   ],
-      // });
+      const API_URL =
+        "https://avaliacao1.azurewebsites.net/api/v1/client/clients";
+
+      var dataSource = new kendo.data.DataSource({
+        transport: {
+          read: {
+            url: API_URL,
+            type: "POST",
+            contentType: "application/json",
+            data: () => {
+              return {
+                IdClient: "",
+                NameClient: "",
+              };
+            },
+          },
+        },
+      });
     </script>
   </body>
 </html>
