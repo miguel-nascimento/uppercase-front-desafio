@@ -18,6 +18,11 @@
     />
     <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2020.3.1118/js/kendo.all.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.js"
+      integrity="sha512-bYkaBWaFtfPIMYt9+CX/4DWgfrjcHinjerNYxQmQx1VM76eUsPPKZa5zWV8KksVkBF/DaHSADCwil2J5Uq2ctA=="
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -35,36 +40,60 @@
       </section>
     </section>
     <script>
+      const API_URL =
+        "https://avaliacao1.azurewebsites.net/api/v1/client/clients";
+
+      var apiData = {
+        data: [
+          {
+            idClient: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            nameClient: "string",
+            updated: "2020-12-04T16:19:24.734Z",
+          },
+        ],
+        total: 0,
+        message: "string",
+        lstError: ["string"],
+      };
       var dataSource = new kendo.data.DataSource({
         transport: {
           read: {
             // The remote service url.
-            url: "https://avaliacao1.azurewebsites.net/api/v1/client/clients",
-
-            // The request type.
+            url: API_URL,
             type: "get",
-
-            // The data type of the returned result.
             dataType: "json",
+            contentType: "application/json",
           },
         },
         // Describe the result format.
         schema: {
-          // The data to which the DataSource will be bound is in the "list" field of the response.
-          data: "list",
+          data: function (response) {
+            console.log(response);
+            return response.Data;
+          },
         },
       });
+
+      dataSource.fetch().then(() => {
+        var data = dataSource.data();
+        console.log(data);
+      });
+
       $(document).ready(function () {
         $("#kendo").kendoGrid({
           dataSource: dataSource,
-          height: 550,
+          schema: {
+            data: "Data",
+          },
+          height: 545,
           columns: [
             {
-              field: "ClienteID",
+              field: "IdClient",
+              title: "ID",
             },
             {
               field: "NameClient",
-              title: "Nome",
+              title: "Nome do Cliente",
             },
           ],
         });

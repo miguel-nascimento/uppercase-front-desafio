@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Desafio Front-end - Miguel</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://kendo.cdn.telerik.com/2020.3.1118/styles/kendo.common.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://kendo.cdn.telerik.com/2020.3.1118/styles/kendo.default.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2020.3.1118/js/kendo.all.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.js"
+      integrity="sha512-bYkaBWaFtfPIMYt9+CX/4DWgfrjcHinjerNYxQmQx1VM76eUsPPKZa5zWV8KksVkBF/DaHSADCwil2J5Uq2ctA=="
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <img src="/img/logo_horizontal.png" alt="UPPERCASE Consultoria logo" />
+    </header>
+
+    <section class="content">
+      <section class="container form-container">
+        <form id="form">
+          <!-- <input id="numerictextbox" /> -->
+        </form>
+      </section>
+    </section>
+    <script>
+      $(document).ready(function () {
+        $("#form").kendoForm({
+          validatable: { validationSummary: true },
+          orientation: "vertical",
+          formData: {
+            NumericTextBox: 1,
+          },
+          items: [
+            {
+              field: "NumericTextBox",
+              editor: "NumericTextBox",
+              min: 1,
+              format: "#.#",
+              decimals: 1,
+              label: "ID:",
+              validation: { required: true },
+            },
+            {
+              field: "TextBox",
+              label: "Nome:",
+              validation: { required: true },
+            },
+          ],
+        });
+      });
+
+      // $("#numerictextbox").kendoNumericTextBox({
+      //   min: 1,
+      //   orientation: "vertical",
+      //   format: "#.#",
+      //   decimals: 1,
+      //   items: [
+      //     {
+      //       field: "NumericTextBox",
+      //       editor: "NumericTextBox",
+      //       label: "ID:",
+      //       validation: { required: true },
+      //     },
+      //   ],
+      // });
+    </script>
+  </body>
+</html>
