@@ -27,19 +27,40 @@
   </head>
   <body>
     <header>
-      <img src="/img/logo_horizontal.png" alt="UPPERCASE Consultoria logo" />
+      <a href="index.html">
+        <img src="/img/logo_horizontal.png" alt="UPPERCASE Consultoria logo" />
+      </a>
     </header>
 
     <section class="content">
       <section class="container form-container">
         <form id="form">
-          <!-- <input id="numerictextbox" /> -->
+          <!-- <input id="nameInput" /> -->
         </form>
       </section>
     </section>
     <script>
+      // https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid
+      // Function shared by Jed Schmidt
+      const UUIDv4 = function b(a) {
+        return a
+          ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
+          : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, b);
+      };
+      const API_URL =
+        "https://avaliacao1.azurewebsites.net/api/v1/client/clients";
+
+      const post = async (id, name) => {
+        params = {
+          IdClient: id,
+          NameClient: name,
+        };
+        let res = await axios.post(API_URL, params);
+      };
+
       $(document).ready(function () {
-        $("#form").kendoForm({
+        const form = $("#form");
+        form.kendoForm({
           validatable: { validationSummary: true },
           orientation: "vertical",
           formData: {
@@ -47,42 +68,19 @@
           },
           items: [
             {
-              field: "NumericTextBox",
-              editor: "NumericTextBox",
-              editorOptions: {
-                min: 1,
-                format: "#.#",
-                decimals: 1,
-              },
-              label: "ID:",
-              validation: { required: true },
-            },
-            {
               field: "TextBox",
-              label: "Nome:",
+              label: "Nome do Cliente:",
               validation: { required: true },
             },
           ],
         });
-      });
 
-      const API_URL =
-        "https://avaliacao1.azurewebsites.net/api/v1/client/clients";
-
-      var dataSource = new kendo.data.DataSource({
-        transport: {
-          read: {
-            url: API_URL,
-            type: "POST",
-            contentType: "application/json",
-            data: () => {
-              return {
-                IdClient: "",
-                NameClient: "",
-              };
-            },
-          },
-        },
+        const textbox = $("#TextBox");
+        form.on("submit", async (e) => {
+          e.preventDefault();
+          await post(UUIDv4(), textbox.val());
+          location.href = "index.html";
+        });
       });
     </script>
   </body>

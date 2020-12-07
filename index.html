@@ -27,13 +27,17 @@
   </head>
   <body>
     <header>
-      <img src="/img/logo_horizontal.png" alt="UPPERCASE Consultoria logo" />
+      <a href="index.html">
+        <img src="/img/logo_horizontal.png" alt="UPPERCASE Consultoria logo" />
+      </a>
     </header>
 
     <section class="content">
       <section class="container">
         <section class="top">
-          <h1>Adicionar novo usuario</h1>
+          <a href="form.html">
+            <img src="img/add.png" alt="" srcset="" />
+          </a>
           <input type="text" name="filter" id="filter" />
         </section>
         <div id="kendo"></div>
@@ -43,19 +47,15 @@
       const API_URL =
         "https://avaliacao1.azurewebsites.net/api/v1/client/clients";
 
-      var apiData = {
-        data: [
-          {
-            idClient: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            nameClient: "string",
-            updated: "2020-12-04T16:19:24.734Z",
-          },
-        ],
-        total: 0,
-        message: "string",
-        lstError: ["string"],
-      };
-      var dataSource = new kendo.data.DataSource({
+      // let columns = [];
+      // const deleteColumn = {
+      //   title: "Delete",
+      // };
+      // const editColumn = {
+      //   title: "Edit",
+      // };
+      // columns.push(deleteColumn, editColumn);
+      const dataSource = new kendo.data.DataSource({
         transport: {
           read: {
             // The remote service url.
@@ -68,35 +68,64 @@
         // Describe the result format.
         schema: {
           data: function (response) {
-            console.log(response);
             return response.Data;
           },
         },
       });
 
       dataSource.fetch().then(() => {
-        var data = dataSource.data();
-        console.log(data);
+        const data = dataSource.data();
       });
+
+      const handleEdit = (event) => {
+        return undefined;
+      };
+
+      const handleDestroy = (event) => {
+        dataItem = grid.dataItem($(event.currentTarget).closest("tr"));
+        grid.remove(dataItem);
+      };
 
       $(document).ready(function () {
         $("#kendo").kendoGrid({
           dataSource: dataSource,
-          schema: {
-            data: "Data",
-          },
+          // schema: {
+          // data: "Data",
+          // },
           height: 545,
           columns: [
             {
               field: "IdClient",
               title: "ID",
+              class:
             },
             {
               field: "NameClient",
               title: "Nome do Cliente",
             },
+            {
+              command: [
+                {
+                  name: "edit",
+                  text: { edit: " ", update: " ", cancel: " " },
+                  click: handleEdit,
+                },
+                {
+                  name: "destroy",
+                  text: " ",
+                  click: handleDestroy,
+                },
+              ],
+              // title: "&nbsp;",
+              width: "150px",
+            },
           ],
         });
+        const grid = $("#kendo").data("kendoGrid");
+
+        // Maybe this can help?
+        // https://stackoverflow.com/questions/46406929/remove-row-from-kendo-ui-grid-with-jquery
+        // https://stackoverflow.com/questions/30919897/how-do-i-reference-a-specific-cell-in-kendo-grid-with-javascript
       });
     </script>
   </body>
