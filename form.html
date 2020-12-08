@@ -18,11 +18,6 @@
     />
     <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2020.3.1118/js/kendo.all.min.js"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.js"
-      integrity="sha512-bYkaBWaFtfPIMYt9+CX/4DWgfrjcHinjerNYxQmQx1VM76eUsPPKZa5zWV8KksVkBF/DaHSADCwil2J5Uq2ctA=="
-      crossorigin="anonymous"
-    ></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -50,14 +45,6 @@
       const API_URL =
         "https://avaliacao1.azurewebsites.net/api/v1/client/clients";
 
-      const post = async (id, name) => {
-        params = {
-          IdClient: id,
-          NameClient: name,
-        };
-        let res = await axios.post(API_URL, params);
-      };
-
       $(document).ready(function () {
         const form = $("#form");
         form.kendoForm({
@@ -78,8 +65,22 @@
         const textbox = $("#TextBox");
         form.on("submit", async (e) => {
           e.preventDefault();
-          await post(UUIDv4(), textbox.val());
-          location.href = "index.html";
+          $.ajax({
+            type: "POST",
+            url: API_URL,
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify({
+              IdClient: UUIDv4(),
+              NameClient: textbox.val(),
+            }),
+            success: () => {
+              location.href = "index.html";
+            },
+            error: (error) => {
+              throw new Error(error);
+            },
+          });
         });
       });
     </script>

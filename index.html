@@ -18,11 +18,6 @@
     />
     <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2020.3.1118/js/kendo.all.min.js"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.js"
-      integrity="sha512-bYkaBWaFtfPIMYt9+CX/4DWgfrjcHinjerNYxQmQx1VM76eUsPPKZa5zWV8KksVkBF/DaHSADCwil2J5Uq2ctA=="
-      crossorigin="anonymous"
-    ></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -70,6 +65,12 @@
           data: function (response) {
             return response.Data;
           },
+          // model: {
+          // fields: {
+          // idClient: { editable: false, nullable: false, type: "string" },
+          // nameClient: { editable: true, nullable: false, type: "string" },
+          // },
+          // },
         },
       });
 
@@ -78,12 +79,14 @@
       });
 
       const handleEdit = (event) => {
+        event.preventDefault();
         return undefined;
       };
 
       const handleDestroy = (event) => {
+        event.preventDefault();
         dataItem = grid.dataItem($(event.currentTarget).closest("tr"));
-        grid.remove(dataItem);
+        console.log(dataItem);
       };
 
       $(document).ready(function () {
@@ -97,32 +100,74 @@
             {
               field: "IdClient",
               title: "ID",
-              class:
             },
             {
               field: "NameClient",
               title: "Nome do Cliente",
+              editable: true,
             },
             {
               command: [
                 {
+                  className: "btn-edit",
                   name: "edit",
-                  text: { edit: " ", update: " ", cancel: " " },
-                  click: handleEdit,
+                  text: { edit: "Editar" },
+                  click: (e) => {
+                    e.preventDefault();
+                    // e.target is the DOM element representing the button
+                    var tr = $(e.target).closest("tr"); // get the current table row (tr)
+                    // get the data bound to the current table row
+                    var data = this.dataItem(tr);
+                    console.log("Details for: " + data.name); // let id = getLineId()
+                    // editHandler(id, )
+                  },
                 },
                 {
+                  className: "btn-destroy",
                   name: "destroy",
-                  text: " ",
-                  click: handleDestroy,
+                  text: "Deletar",
+                  click: function (e) {
+                    // prevent page scroll position change
+                    e.preventDefault();
+                    // e.target is the DOM element representing the button
+                    var tr = $(e.target).closest("tr"); // get the current table row (tr)
+                    // get the data bound to the current table row
+                    var data = this.dataItem(tr);
+                    console.log("Details for: " + data.name);
+                  },
                 },
               ],
               // title: "&nbsp;",
-              width: "150px",
+              width: "200px",
             },
           ],
         });
         const grid = $("#kendo").data("kendoGrid");
 
+        const getRowId = (row) => {
+          return row.children()[0].innerHTML;
+        };
+        $(document).on("click", ".btn-destroy", function (e) {
+          e.preventDefault();
+          let row = $(e.target).closest("tr");
+          let id = getRowId(row);
+          console.log(id);
+          $.ajax({
+            type: "DELETE",
+            url: API_URL.concat("/", id),
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify({
+              IdClient: id,
+            }),
+            success: () => {
+              grid.removeRow(row);
+            },
+            error: (error) => {
+              throw new Error(error);
+            },
+          });
+        });
         // Maybe this can help?
         // https://stackoverflow.com/questions/46406929/remove-row-from-kendo-ui-grid-with-jquery
         // https://stackoverflow.com/questions/30919897/how-do-i-reference-a-specific-cell-in-kendo-grid-with-javascript

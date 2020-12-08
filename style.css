@@ -99,3 +99,13 @@ header a img {
   align-items: center;
   justify-content: center;
 }
+
+.btn-edit {
+  background-color: #f7ef54;
+  color: #555555;
+}
+
+.btn-destroy {
+  background-color: #e35849;
+  color: #1f1f11;
+}
