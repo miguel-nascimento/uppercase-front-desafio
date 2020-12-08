@@ -65,14 +65,6 @@ header a img {
   width: 50%;
 }
 
-.container .top input {
-  border: none;
-  outline: none;
-  border-radius: 5px;
-  height: 2.4rem;
-  padding: 0.1rem 1rem;
-}
-
 .form-container {
   padding: 3rem 1rem;
 }
@@ -107,5 +99,53 @@ header a img {
 
 .btn-destroy {
   background-color: #e35849;
-  color: #1f1f11;
+  /* color: #1f1f11; */
+}
+
+.btn-destroy:hover {
+  background-color: #bf301d;
+  color: #363636;
+}
+
+.btn-edit:hover {
+  background-color: #c9a932;
+  color: #363636;
+}
+
+#edit {
+  display: flex;
+  align-items: center;
+}
+
+#edit label {
+  margin: 0 1rem;
+  color: #383838;
+  font-size: 1.6rem;
+  width: 100%;
+}
+
+#edit input {
+  border: none;
+  outline: none;
+  border-radius: 5px 0 0 5px;
+  height: 2.4rem;
+  padding: 0.1rem 1rem;
+  width: 100%;
+}
+
+.btn-confirm {
+  height: 2.55rem;
+  border: 1px solid #6ecf25;
+  border-radius: 0 5px 5px 0;
+  background-color: #80e831;
+  color: #fff;
+}
+
+.btn-confirm:focus {
+  background-color: #6ab531;
+  outline: none;
+}
+
+.visibility-hidden {
+  visibility: hidden;
 }

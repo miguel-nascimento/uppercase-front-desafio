@@ -16,6 +16,8 @@
       href="https://kendo.cdn.telerik.com/2020.3.1118/styles/kendo.default.min.css"
       rel="stylesheet"
     />
+    <script src="https://code.iconify.design/1/1.0.6/iconify.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2020.3.1118/js/kendo.all.min.js"></script>
     <link rel="stylesheet" href="style.css" />
@@ -33,7 +35,18 @@
           <a href="form.html">
             <img src="img/add.png" alt="" srcset="" />
           </a>
-          <input type="text" name="filter" id="filter" />
+          <div id="edit">
+            <label for="update">Novo nome do Cliente:</label>
+            <input type="text" name="update" id="update" />
+            <button class="btn-confirm">
+              <span
+                class="iconify"
+                data-inline="false"
+                data-icon="line-md:confirm-circle"
+                style="font-size: 20px"
+              ></span>
+            </button>
+          </div>
         </section>
         <div id="kendo"></div>
       </section>
@@ -73,28 +86,19 @@
           // },
         },
       });
-
       dataSource.fetch().then(() => {
         const data = dataSource.data();
       });
 
-      const handleEdit = (event) => {
-        event.preventDefault();
-        return undefined;
-      };
-
-      const handleDestroy = (event) => {
-        event.preventDefault();
-        dataItem = grid.dataItem($(event.currentTarget).closest("tr"));
-        console.log(dataItem);
-      };
-
       $(document).ready(function () {
+        const tempData = {
+          IdClient: "",
+          NameClient: "",
+        };
+        const editDiv = $("#edit");
+        editDiv.addClass("visibility-hidden");
         $("#kendo").kendoGrid({
           dataSource: dataSource,
-          // schema: {
-          // data: "Data",
-          // },
           height: 545,
           columns: [
             {
@@ -104,53 +108,41 @@
             {
               field: "NameClient",
               title: "Nome do Cliente",
-              editable: true,
             },
             {
               command: [
                 {
                   className: "btn-edit",
                   name: "edit",
-                  text: { edit: "Editar" },
-                  click: (e) => {
-                    e.preventDefault();
-                    // e.target is the DOM element representing the button
-                    var tr = $(e.target).closest("tr"); // get the current table row (tr)
-                    // get the data bound to the current table row
-                    var data = this.dataItem(tr);
-                    console.log("Details for: " + data.name); // let id = getLineId()
-                    // editHandler(id, )
+                  text: {
+                    edit: "Editar",
+                    update: "Atualizar",
+                    cancel: "Cancelar",
                   },
                 },
                 {
                   className: "btn-destroy",
                   name: "destroy",
                   text: "Deletar",
-                  click: function (e) {
-                    // prevent page scroll position change
-                    e.preventDefault();
-                    // e.target is the DOM element representing the button
-                    var tr = $(e.target).closest("tr"); // get the current table row (tr)
-                    // get the data bound to the current table row
-                    var data = this.dataItem(tr);
-                    console.log("Details for: " + data.name);
-                  },
                 },
               ],
               // title: "&nbsp;",
               width: "200px",
             },
           ],
+          // editable: "inline",
         });
         const grid = $("#kendo").data("kendoGrid");
 
-        const getRowId = (row) => {
+        const getIdFromRow = (row) => {
           return row.children()[0].innerHTML;
         };
-        $(document).on("click", ".btn-destroy", function (e) {
+
+        // Mapeia a função de deletar o cliente ao botão de delete.
+        $(document).on("click", ".btn-destroy", (e) => {
           e.preventDefault();
           let row = $(e.target).closest("tr");
-          let id = getRowId(row);
+          let id = getIdFromRow(row);
           console.log(id);
           $.ajax({
             type: "DELETE",
@@ -168,9 +160,43 @@
             },
           });
         });
-        // Maybe this can help?
-        // https://stackoverflow.com/questions/46406929/remove-row-from-kendo-ui-grid-with-jquery
-        // https://stackoverflow.com/questions/30919897/how-do-i-reference-a-specific-cell-in-kendo-grid-with-javascript
+
+        const updateClientName = (id, NameClient) => {
+          $.ajax({
+            type: "PUT",
+            url: API_URL,
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify({
+              IdClient: id,
+              NameClient,
+            }),
+            success: () => {
+              grid.refresh();
+              location.href = "index.html";
+            },
+            error: (error) => {
+              throw new Error(error);
+            },
+          });
+        };
+
+        // Mapeia a função de editar o nome do cliente ao botão de update.
+        $(document).on("click", ".btn-edit", (e) => {
+          e.preventDefault();
+          let row = $(e.target).closest("tr");
+          let id = getIdFromRow(row);
+          $("#update").val("");
+          editDiv.removeClass("visibility-hidden");
+          tempData.IdClient = id;
+        });
+
+        $(document).on("click", ".btn-confirm", (e) => {
+          e.preventDefault();
+          let NameClient = $("#update").val();
+          let IdClient = tempData.IdClient;
+          updateClientName(IdClient, NameClient);
+        });
       });
     </script>
   </body>
